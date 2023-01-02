@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'climb_route.dart';
 
 class ClimbRouteNotifier extends StateNotifier<List<ClimbRoute>> {
-  ClimbRouteNotifier() : super([]);
+  ClimbRouteNotifier(List<ClimbRoute> savedRoutes) : super(savedRoutes);
 
   void addClimbRoute(ClimbRoute route) {
     state = [...state, route];

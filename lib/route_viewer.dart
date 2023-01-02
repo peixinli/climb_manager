@@ -17,9 +17,11 @@ class RouteViewer extends ConsumerStatefulWidget {
   final ClimbRoute? climbRoute;
 
   final StateNotifierProvider<ClimbRouteNotifier, List<ClimbRoute>>
-      climbRouteProvider;
+      climbRoutesProvider;
 
-  const RouteViewer({required this.climbRouteProvider, this.climbRoute});
+  final ClimbRouteStorage storage;
+
+  const RouteViewer({required this.climbRoutesProvider, required this.storage, this.climbRoute});
 
   @override
   ConsumerState<RouteViewer> createState() => _RouteViewerState();
@@ -68,7 +70,7 @@ class _RouteViewerState extends ConsumerState<RouteViewer> {
               IconButton(
                   onPressed: () {
                     ref
-                        .read(climbRoutesProvider.notifier)
+                        .read(widget.climbRoutesProvider.notifier)
                         .removeClimbRoute(widget.climbRoute!);
                     Navigator.pop(context);
                   },
@@ -164,7 +166,8 @@ class _RouteViewerState extends ConsumerState<RouteViewer> {
   }
 
   void save() {
-    final currentRoutes = ref.watch(climbRoutesProvider);
+    print('save');
+    final currentRoutes = ref.watch(widget.climbRoutesProvider);
     if (widget.climbRoute == null) {
       var newRoute = ClimbRoute((b) => b
         ..id = (currentRoutes.isEmpty ? 0 : currentRoutes.last.id + 1)
@@ -174,10 +177,10 @@ class _RouteViewerState extends ConsumerState<RouteViewer> {
       if (_imagePath != null) {
         newRoute = (newRoute.toBuilder()..imagePath = _imagePath).build();
       }
-      ref.read(climbRoutesProvider.notifier).addClimbRoute(newRoute);
+      ref.read(widget.climbRoutesProvider.notifier).addClimbRoute(newRoute);
     } else {
       ref
-          .read(climbRoutesProvider.notifier)
+          .read(widget.climbRoutesProvider.notifier)
           .modifyClimbRoute(ClimbRoute((b) => b
             ..id = widget.climbRoute!.id
             ..routeName = nameController.text
@@ -185,6 +188,7 @@ class _RouteViewerState extends ConsumerState<RouteViewer> {
             ..imagePath = _imagePath
             ..address = _address));
     }
+    widget.storage.writeClimbRoutes(ref.watch(widget.climbRoutesProvider));
   }
 
   void setCurrentLocation() async {
@@ -209,9 +213,7 @@ class _RouteViewerState extends ConsumerState<RouteViewer> {
       try {
         placemarks = await geocoder.placemarkFromCoordinates(
             locationData.latitude!, locationData.longitude!);
-        print('placemark ${placemarks.first}');
       } catch (e) {
-        print('placemark error: $e');
       }
 
       final placemark = placemarks.first;
