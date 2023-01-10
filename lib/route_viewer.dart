@@ -12,6 +12,7 @@ import 'package:path/path.dart';
 
 import 'model/climb_route.dart';
 import 'model/climb_route_model.dart';
+import 'route_editor.dart';
 
 class RouteViewer extends ConsumerStatefulWidget {
   final ClimbRoute? climbRoute;
@@ -21,7 +22,10 @@ class RouteViewer extends ConsumerStatefulWidget {
 
   final ClimbRouteStorage storage;
 
-  const RouteViewer({required this.climbRoutesProvider, required this.storage, this.climbRoute});
+  const RouteViewer(
+      {required this.climbRoutesProvider,
+      required this.storage,
+      this.climbRoute});
 
   @override
   ConsumerState<RouteViewer> createState() => _RouteViewerState();
@@ -44,10 +48,8 @@ class _RouteViewerState extends ConsumerState<RouteViewer> {
     print('climbRoute ${widget.climbRoute}');
     if (widget.climbRoute != null) {
       _imagePath = widget.climbRoute!.imagePath;
-      nameController
-        ..text = widget.climbRoute?.routeName ?? '';
-      levelController
-        ..text = (widget.climbRoute?.level ?? '');
+      nameController..text = widget.climbRoute?.routeName ?? '';
+      levelController..text = (widget.climbRoute?.level ?? '');
     }
     super.initState();
   }
@@ -95,24 +97,24 @@ class _RouteViewerState extends ConsumerState<RouteViewer> {
         children: [
           TextFormField(
             controller: nameController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
                 hintText: 'Enter the route name', labelText: 'Route Name'),
           ),
           TextFormField(
             controller: levelController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
                 hintText: 'Enter the route level', labelText: 'Route level'),
           ),
           if (_imagePath == null)
             Column(
               children: [
                 Container(
-                  decoration: ShapeDecoration(
+                  decoration: const ShapeDecoration(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(6)),
                           side: BorderSide(width: 1, color: Colors.black54))),
-                  padding: EdgeInsets.symmetric(vertical: 74),
-                  margin: EdgeInsets.fromLTRB(0, 32, 0, 12),
+                  padding: const EdgeInsets.symmetric(vertical: 74),
+                  margin: const EdgeInsets.fromLTRB(0, 32, 0, 12),
                   child: Center(
                     child: IconButton(
                       icon: Icon(Icons.add_a_photo),
@@ -134,27 +136,45 @@ class _RouteViewerState extends ConsumerState<RouteViewer> {
                 padding: EdgeInsets.symmetric(vertical: 32),
                 child: Column(
                   children: [
-                    TextButton(onPressed: () {
-                      getImage(context);
-                    }, child: Text('Select another photo',style: TextStyle(color: Colors.blueGrey),)),
+                    TextButton(
+                        onPressed: () {
+                          getImage(context);
+                        },
+                        child: const Text(
+                          'Select another photo',
+                          style: TextStyle(color: Colors.blueGrey),
+                        )),
                     Image.file(File(_imagePath!),
                         height: 250, fit: BoxFit.cover),
                   ],
                 )),
           Container(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
             child: Row(
               children: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.location_on, color: Colors.black54,)),
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.location_on,
+                      color: Colors.black54,
+                    )),
                 if (!_fetchedLocation && _address == null)
-                  Text('Location not found', style: TextStyle(color: Colors.black54),)
+                  const Text(
+                    'Location not found',
+                    style: TextStyle(color: Colors.black54),
+                  )
                 else
-                  Text(_address ?? 'Error', style: TextStyle(color: Colors.black54),),
+                  Text(
+                    _address ?? 'Error',
+                    style: TextStyle(color: Colors.black54),
+                  ),
               ],
             ),
           ),
           TextButton(
-            style: TextButton.styleFrom(backgroundColor: Colors.orange, foregroundColor: Colors.black54 ),
+              style: TextButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.black54),
               onPressed: () {
                 save();
                 Navigator.pop(context);
@@ -213,10 +233,10 @@ class _RouteViewerState extends ConsumerState<RouteViewer> {
       try {
         placemarks = await geocoder.placemarkFromCoordinates(
             locationData.latitude!, locationData.longitude!);
-      } catch (e) {
-      }
+      } catch (e) {}
 
       final placemark = placemarks.first;
+
       setState(() {
         _address =
             '${placemark.street}, ${placemark.locality}, ${placemark.administrativeArea}';
@@ -277,10 +297,16 @@ class _RouteViewerState extends ConsumerState<RouteViewer> {
       final newImage = File('${directory.path}/$name');
       File(image.path).copy(newImage.path);
 
-      setState(() {
-        _imagePath = newImage.path;
-        print('image path $_imagePath');
-      });
+      print('image path $_imagePath');
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => RouteEditor(
+                imagePath: newImage.path,
+                onImageSaved: (newImage) {
+                  setState(() {
+                    this._imagePath = newImage;
+                  });
+                },
+              )));
     } on PlatformException catch (e) {}
   }
 }

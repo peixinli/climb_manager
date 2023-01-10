@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "168697939762",
+    "project_id": "climb-manger",
+    "storage_bucket": "climb-manger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:168697939762:android:effbfc435686c36bee792b",
+        "android_client_info": {
+          "package_name": "com.example.climb_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "168697939762-89libk8ofunfqsj0ktpu4b14bfveqkkl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpjHoAmNUbKQpz2k7RuvDOIZTej18Kq7I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "168697939762-89libk8ofunfqsj0ktpu4b14bfveqkkl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

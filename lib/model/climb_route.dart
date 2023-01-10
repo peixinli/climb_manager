@@ -19,3 +19,16 @@ abstract class ClimbRoute implements Built<ClimbRoute, ClimbRouteBuilder> {
   ClimbRoute._();
   factory ClimbRoute([void Function(ClimbRouteBuilder) updates]) = _$ClimbRoute;
 }
+
+
+abstract class PathNode implements Built<PathNode, PathNodeBuilder> {
+  static Serializer<PathNode> get serializer => _$pathNodeSerializer;
+
+  double get left;
+
+  double get top;
+
+  PathNode._();
+
+  factory PathNode([void Function(PathNodeBuilder) updates]) = _$PathNode;
+}

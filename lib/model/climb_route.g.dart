@@ -7,6 +7,7 @@ part of 'climb_route.dart';
 // **************************************************************************
 
 Serializer<ClimbRoute> _$climbRouteSerializer = new _$ClimbRouteSerializer();
+Serializer<PathNode> _$pathNodeSerializer = new _$PathNodeSerializer();
 
 class _$ClimbRouteSerializer implements StructuredSerializer<ClimbRoute> {
   @override
@@ -71,6 +72,51 @@ class _$ClimbRouteSerializer implements StructuredSerializer<ClimbRoute> {
         case 'imagePath':
           result.imagePath = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
+class _$PathNodeSerializer implements StructuredSerializer<PathNode> {
+  @override
+  final Iterable<Type> types = const [PathNode, _$PathNode];
+  @override
+  final String wireName = 'PathNode';
+
+  @override
+  Iterable<Object?> serialize(Serializers serializers, PathNode object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object?>[
+      'left',
+      serializers.serialize(object.left, specifiedType: const FullType(double)),
+      'top',
+      serializers.serialize(object.top, specifiedType: const FullType(double)),
+    ];
+
+    return result;
+  }
+
+  @override
+  PathNode deserialize(Serializers serializers, Iterable<Object?> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new PathNodeBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current! as String;
+      iterator.moveNext();
+      final Object? value = iterator.current;
+      switch (key) {
+        case 'left':
+          result.left = serializers.deserialize(value,
+              specifiedType: const FullType(double))! as double;
+          break;
+        case 'top':
+          result.top = serializers.deserialize(value,
+              specifiedType: const FullType(double))! as double;
           break;
       }
     }
@@ -209,6 +255,96 @@ class ClimbRouteBuilder implements Builder<ClimbRoute, ClimbRouteBuilder> {
             address: BuiltValueNullFieldError.checkNotNull(
                 address, r'ClimbRoute', 'address'),
             imagePath: imagePath);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$PathNode extends PathNode {
+  @override
+  final double left;
+  @override
+  final double top;
+
+  factory _$PathNode([void Function(PathNodeBuilder)? updates]) =>
+      (new PathNodeBuilder()..update(updates))._build();
+
+  _$PathNode._({required this.left, required this.top}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(left, r'PathNode', 'left');
+    BuiltValueNullFieldError.checkNotNull(top, r'PathNode', 'top');
+  }
+
+  @override
+  PathNode rebuild(void Function(PathNodeBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  PathNodeBuilder toBuilder() => new PathNodeBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is PathNode && left == other.left && top == other.top;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, left.hashCode), top.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper(r'PathNode')
+          ..add('left', left)
+          ..add('top', top))
+        .toString();
+  }
+}
+
+class PathNodeBuilder implements Builder<PathNode, PathNodeBuilder> {
+  _$PathNode? _$v;
+
+  double? _left;
+  double? get left => _$this._left;
+  set left(double? left) => _$this._left = left;
+
+  double? _top;
+  double? get top => _$this._top;
+  set top(double? top) => _$this._top = top;
+
+  PathNodeBuilder();
+
+  PathNodeBuilder get _$this {
+    final $v = _$v;
+    if ($v != null) {
+      _left = $v.left;
+      _top = $v.top;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(PathNode other) {
+    ArgumentError.checkNotNull(other, 'other');
+    _$v = other as _$PathNode;
+  }
+
+  @override
+  void update(void Function(PathNodeBuilder)? updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  PathNode build() => _build();
+
+  _$PathNode _build() {
+    final _$result = _$v ??
+        new _$PathNode._(
+            left: BuiltValueNullFieldError.checkNotNull(
+                left, r'PathNode', 'left'),
+            top:
+                BuiltValueNullFieldError.checkNotNull(top, r'PathNode', 'top'));
     replace(_$result);
     return _$result;
   }
